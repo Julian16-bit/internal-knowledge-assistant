@@ -1,0 +1,9 @@
+# Core dependencies
+weaviate-client
+docling
+openai
+python-dotenv
+fastmcp
+
+# Streamlit UI
+streamlit
