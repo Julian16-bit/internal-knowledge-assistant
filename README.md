@@ -38,7 +38,6 @@ This system enforces **role-based access control** at the retrieval layer, ensur
 
 - Simple chat interface with user role switching
 - Shows source documents with metadata for transparency
-- Chat history clears when switching users (prevents cross-contamination)
 
 ---
 
