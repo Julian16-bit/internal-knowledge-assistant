@@ -44,22 +44,39 @@ This system enforces **role-based access control** at the retrieval layer, ensur
 
 ## Key Assumptions
 
-1. Users are authenticated with static tokens (`users.json`) that map to roles. Each document has an `access` array in `manifest.json` listing allowed roles. Access is granted if any user role matches any document role. In production, tokens would be replaced with signed JWTs, but the MCP tool boundary makes this swap straightforward.
+1. Users are authenticated with static tokens (`users.json`) that map to roles. Each document has an `access` array in `manifest.json` listing allowed roles. Access is granted if any user role matches any document role. In production, tokens would be replaced with signed JWTs.
 
-2. Documents containing "executive committee only" (case-insensitive) are split at the line boundary where the marker appears. Text before the marker retains the document's original access level; the marker line and everything after becomes `exec`-only. Documents without the marker or already marked `exec` are stored whole.
+2. Documents with "executive committee only" are split at that line: content before the marker keeps its original access level, content after becomes `exec`-only. Other documents are stored whole.
 
-3. Documents are short enough (<2000 tokens) to store whole, preserving complete context. Longer documents would require semantic chunking while maintaining access metadata on each chunk.
+3. Documents are short enough (<1500 characters) to store whole, preserving complete context. Longer documents would require semantic chunking while maintaining access metadata on each chunk.
 
 4. When sources disagree (e.g., pricing in two documents), the agent is instructed to prefer the most current document and note the conflict in its response.
 
 ---
 
-## Next Steps
+## Future Improvements
+
+### Testing & Evaluation
+- Create a golden dataset of questions with expected source documents and answers to establish a repeatable evaluation benchmark.
+- Integrate the RAGAS framework to measure retrieval quality (context precision/recall) and answer faithfulness against the golden dataset.
+- Experiment with retrieval parameters, chunking strategies, embedding models, prompts, and LLMs to identify the best-performing configuration through A/B testing.
 
 ### Security & Auth
-- Replace static tokens with signed JWTs with expiry and scopes
-- Add audit logging for all document access (who queried what, when)
-- Implement rate limiting per user/role
+- Replace static authentication tokens with signed JWTs containing user claims (e.g., user ID, roles, and expiration) that are validated on every request.
+- Implement structured audit logging to record users, queries, retrieved documents, response times, and timestamps for debugging and compliance.
+- Add monitoring and tracing to capture latency, error rates, token usage, cost per query, and the documents retrieved for each response.
 
+### Agent Improvements
+- Improve retrieval quality by adding a cross-encoder reranker to refine the top retrieved documents before passing them to the LLM.
+- Maintain conversation history so the agent can answer follow-up questions with conversational context.
+- Add clarification logic to prompt users for additional details when a query is ambiguous before performing retrieval.
 
+### Document Processing
+- Implement semantic chunking to improve retrieval while preserving document metadata and access permissions for each chunk.
+- Use vision-language models to extract text and structured information from charts, diagrams, and scanned PDF content.
+- Support incremental indexing by detecting modified documents and updating only the affected embeddings instead of rebuilding the entire index.
+
+### Scalability & Operations
+- Migrate from a local Weaviate instance to a managed cloud deployment with multi-tenancy to support larger workloads and multiple users.
+- Deploy the MCP server over HTTP instead of stdio so it can run as a shared service rather than spawning a new subprocess for each request.
 ---
