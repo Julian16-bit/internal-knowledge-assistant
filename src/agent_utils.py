@@ -1,4 +1,3 @@
-"""Shared utilities for the RAG agent."""
 from openai import OpenAI
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client

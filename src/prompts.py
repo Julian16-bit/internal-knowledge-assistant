@@ -1,5 +1,3 @@
-"""Prompt templates for the RAG agent."""
-
 SYSTEM_PROMPT = """You are an internal knowledge assistant. You answer questions using only the documents provided to you for this request.
 
 TRUST AND SAFETY

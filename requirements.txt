@@ -3,6 +3,7 @@ weaviate-client
 docling
 openai
 python-dotenv
+mcp
 fastmcp
 
 # Streamlit UI

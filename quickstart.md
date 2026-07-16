@@ -58,7 +58,6 @@ When prompted:
 ### Streamlit Web Interface
 
 ```bash
-cd src
 streamlit run app.py
 ```
 
